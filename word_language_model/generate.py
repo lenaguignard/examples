@@ -30,6 +30,8 @@ parser.add_argument('--temperature', type=float, default=1.0,
                     help='temperature - higher will increase diversity')
 parser.add_argument('--log-interval', type=int, default=100,
                     help='reporting interval')
+parser.add_argument('--input', type=str,
+                    help='enter a "prompt" in quotation marks')
 args = parser.parse_args()
 
 # Set the random seed manually for reproducibility.
@@ -42,6 +44,18 @@ device = torch.device("cuda" if args.cuda else "cpu")
 
 if args.temperature < 1e-3:
     parser.error("--temperature has to be greater or equal 1e-3")
+    
+# If the user enters a prompt as an input, the nr of words in the input are counted and subtracted from the nr of generated words (--words)
+if args.input:
+  nr_words_prompt = len(args.input.split())
+  args.words = args.words - nr_words_prompt
+  
+  # Iterate through words in string and check if all are in the vocabulary (idx2word from data.py)
+	for word in args.input.split():
+		if word not in corpus.dictionary.idx2word:
+			print("Not all the words of the prompt are in the vocabulary, please try another prompt.")
+ 
+
 
 with open(args.checkpoint, 'rb') as f:
     model = torch.load(f).to(device)
@@ -53,7 +67,12 @@ ntokens = len(corpus.dictionary)
 is_transformer_model = hasattr(model, 'model_type') and model.model_type == 'Transformer'
 if not is_transformer_model:
     hidden = model.init_hidden(1)
-input = torch.randint(ntokens, (1, 1), dtype=torch.long).to(device)
+    
+# If the user enters a prompt, this prompt must be used as the input for the model, if no prompt a random word in the vocab is taken    
+if args.input:
+  input = args.input
+else:
+  input = torch.randint(ntokens, (1, 1), dtype=torch.long).to(device)
 
 with open(args.outf, 'w') as outf:
     with torch.no_grad():  # no tracking history
