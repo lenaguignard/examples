@@ -45,7 +45,7 @@ device = torch.device("cuda" if args.cuda else "cpu")
 if args.temperature < 1e-3:
     parser.error("--temperature has to be greater or equal 1e-3")
     
-# If the user enters a prompt as an input, the nr of words in the input are counted and subtracted from the nr of generated words (--words)
+# If the user enters a prompt as an input, the nr of words in the input are counted and subtracted from the nr of words that will be generated (--words)
 if args.input:
 	nr_words_prompt = len(args.input.split())
 	args.words = args.words - nr_words_prompt
