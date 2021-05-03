@@ -70,7 +70,7 @@ if not is_transformer_model:
     
 # If the user enters a prompt, this prompt must be used as the input for the model, if no prompt a random word in the vocab is taken    
 if args.input:
-  input = args.input
+  input = args.input.to(device)
 else:
   input = torch.randint(ntokens, (1, 1), dtype=torch.long).to(device)
 
