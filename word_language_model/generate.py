@@ -31,7 +31,7 @@ parser.add_argument('--temperature', type=float, default=1.0,
 parser.add_argument('--log-interval', type=int, default=100,
                     help='reporting interval')
 parser.add_argument('--input', type=str,
-                    help='enter a "prompt" in quotation marks')
+                    help='enter a prompt in quotation marks')
 args = parser.parse_args()
 
 # Set the random seed manually for reproducibility.
@@ -47,13 +47,13 @@ if args.temperature < 1e-3:
     
 # If the user enters a prompt as an input, the nr of words in the input are counted and subtracted from the nr of generated words (--words)
 if args.input:
-  nr_words_prompt = len(args.input.split())
-  args.words = args.words - nr_words_prompt
+	nr_words_prompt = len(args.input.split())
+	args.words = args.words - nr_words_prompt
   
   # Iterate through words in string and check if all are in the vocabulary (idx2word from data.py)
 	for word in args.input.split():
 		if word not in corpus.dictionary.idx2word:
-			print("Not all the words of the prompt are in the vocabulary, please try another prompt.")
+			parser.error("--not all the words of the prompt are in the vocabulary, please try another prompt.")
  
 
 
