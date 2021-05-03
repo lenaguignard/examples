@@ -50,7 +50,7 @@ if args.input:
 	nr_words_prompt = len(args.input.split())
 	args.words = args.words - nr_words_prompt
   
-  # Iterate through words in string and check if all are in the vocabulary (idx2word from data.py)
+  # Iterate through words in prompt and check if all are in the vocabulary (idx2word from data.py)
 	for word in args.input.split():
 		if word not in corpus.dictionary.idx2word:
 			parser.error("--not all the words of the prompt are in the vocabulary, please try another prompt.")
